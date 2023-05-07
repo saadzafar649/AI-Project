@@ -4,6 +4,7 @@ import sys
 
 graph = {}
 weights = {}
+heuristic = {}
 
 class AILabProject():
 
@@ -44,7 +45,7 @@ class AILabProject():
         button_size = add_button.sizeHint()
         add_button.resize(button_size)
         add_button.move(400, 60)
-        add_button.clicked.connect(self.add_nodes)
+        add_button.clicked.connect(self.add_node_heuristic)
 
 
         # to add heuristic
@@ -103,8 +104,23 @@ class AILabProject():
 
         print(graph)
         print(weights)
-
         print(f"Node1: {node1}, Node2: {node2}, Weight: {weight}")
+
+    def add_node_heuristic(self):
+        node = self.node.text()
+        nodeHeuristic = self.nodeHeuristic.text()
+        self.node.clear()
+        self.nodeHeuristic.clear()
+
+        if node in graph and nodeHeuristic != '':
+            heuristic[node]=int(nodeHeuristic)
+            print(heuristic)
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
