@@ -2,6 +2,9 @@ from PyQt5.QtWidgets import *
 import sys
 
 
+graph = {}
+weights = {}
+
 class AILabProject():
 
     def load_gui(self, window):
@@ -75,9 +78,32 @@ class AILabProject():
         node1 = self.node1_input.text()
         node2 = self.node2_input.text()
         weight = self.weight_input.text()
+        graphType = self.graphtype.currentText()
         self.node1_input.clear()
         self.node2_input.clear()
         self.weight_input.clear()
+
+        print(graphType)
+
+        if node1 not in graph:
+            graph[node1]=[]
+
+        if node2 not in graph:
+            graph[node2]=[]
+
+        if node2 not in graph[node1]:
+            graph[node1].append(node2)
+
+        if graphType =="Undirected Graph":
+            if node1 not in graph[node2]:
+                graph[node2].append(node1)
+            weights[(node2, node1)] = int(weight)
+
+        weights[(node1,node2)] = int(weight)
+
+        print(graph)
+        print(weights)
+
         print(f"Node1: {node1}, Node2: {node2}, Weight: {weight}")
 
 
