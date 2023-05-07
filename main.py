@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 from PyQt5.QtWidgets import *
 import sys
+from BFS import *
+
 
 graph = {}
 weights = {}
@@ -12,8 +14,43 @@ heuristic = {}
 graphUnDir = {}
 weightsUnDir = {}
 
+
+graphUnDir = graph = {
+    '1':['2','3'],
+    '2':['4','5','1'],
+    '3':['6','7','1'],
+    '4' :['2'],
+    '5' :['2'],
+    '6' :['3'],
+    '7' :['3'],
+}
+weightsUnDir = weights = {
+    ('1','2'):1,
+    ('1','3'):1,
+    ('2','4'):1,
+    ('2','5'):1,
+    ('2','1'):1,
+    ('4','2'):1,
+    ('5','2'):1,
+    ('6','3'):1,
+    ('7','3'):1,
+}
+
+
+
+
+
+
+
 class AILabProject():
 
+    def showerror(self,error):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText(error)
+        msg.setWindowTitle("Error")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
     def load_gui(self, window):
         #to add nodes
 
@@ -69,7 +106,7 @@ class AILabProject():
         button_size = add_button.sizeHint()
         add_button.resize(button_size)
         add_button.move(400, 100)
-        add_button.clicked.connect(self.drawGraph)
+        add_button.clicked.connect(self.apply_algorithm)
 
         #Algo DropDown
         self.algorithms = QComboBox(window)
@@ -78,8 +115,33 @@ class AILabProject():
 
         #Graph Type DropDown
         self.graphtype = QComboBox(window)
-        self.graphtype.addItems(['Directed Graph', 'Undirected Graph'])
+        self.graphtype.addItems(['Undirected Graph','Directed Graph'])
         self.graphtype.setGeometry(180, 140, 200, 30)
+
+
+        add_button = QPushButton('Show Graph', window)
+        button_size = add_button.sizeHint()
+        add_button.resize(button_size)
+        add_button.move(400, 140)
+        add_button.clicked.connect(self.drawGraph)
+
+    def apply_algorithm(self):
+        algo = self.algorithms.currentText()
+        graphType = self.graphtype.currentText()
+        start = self.start.text()
+        goal = self.goal.text()
+
+        if start not in graph or goal not in graph:
+            print("select valid nodes")
+            return
+
+        self.start.clear()
+        self.goal.clear()
+
+        if graphType == 'Undirected Graph':
+            if algo == 'BFS':
+                print(BFS(start,goal, graphUnDir,False))
+
 
     def add_nodes(self):
         node1 = self.node1_input.text()
@@ -203,3 +265,4 @@ if __name__ == "__main__":
     ui.load_gui(window)
     window.show()
     sys.exit(app.exec_())
+
