@@ -1,10 +1,16 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+
 from PyQt5.QtWidgets import *
 import sys
-
 
 graph = {}
 weights = {}
 heuristic = {}
+
+graphUnDir = {}
+weightsUnDir = {}
 
 class AILabProject():
 
@@ -63,7 +69,7 @@ class AILabProject():
         button_size = add_button.sizeHint()
         add_button.resize(button_size)
         add_button.move(400, 100)
-        add_button.clicked.connect(self.add_nodes)
+        add_button.clicked.connect(self.drawGraph)
 
         #Algo DropDown
         self.algorithms = QComboBox(window)
@@ -86,24 +92,33 @@ class AILabProject():
 
         print(graphType)
 
-        if node1 not in graph:
+        if node1 not in graphUnDir:
             graph[node1]=[]
+            graphUnDir[node1]=[]
 
-        if node2 not in graph:
+        if node2 not in graphUnDir:
             graph[node2]=[]
+            graphUnDir[node2] = []
 
         if node2 not in graph[node1]:
             graph[node1].append(node2)
+            graphUnDir[node1].append(node2)
 
-        if graphType =="Undirected Graph":
-            if node1 not in graph[node2]:
-                graph[node2].append(node1)
-            weights[(node2, node1)] = int(weight)
+        # if node1 not in graphUnDir[node2]:
+        #     graphUnDir[node2].append(node1)
+
+        # if graphType == "Undirected Graph":
+        if node1 not in graphUnDir[node2]:
+            graphUnDir[node2].append(node1)
+
+        weightsUnDir[(node2, node1)] = int(weight)
+        weightsUnDir[(node1,node2)] = int(weight)
 
         weights[(node1,node2)] = int(weight)
 
-        print(graph)
-        print(weights)
+
+        print(graphUnDir)
+        print(weightsUnDir)
         print(f"Node1: {node1}, Node2: {node2}, Weight: {weight}")
 
     def add_node_heuristic(self):
@@ -115,6 +130,62 @@ class AILabProject():
         if node in graph and nodeHeuristic != '':
             heuristic[node]=int(nodeHeuristic)
             print(heuristic)
+
+
+    def drawGraph(self):
+
+        graphType = self.graphtype.currentText()
+        nodesList = graph.keys()
+
+
+
+        if graphType == "Directed Graph":
+            weightList = weights.keys()
+            DG = nx.DiGraph()
+            DG.add_nodes_from(nodesList)
+            DG.add_edges_from(weightList)
+            pos1 = nx.spring_layout(DG)
+
+            pos_attrs = {}
+            for node, coords in pos1.items():
+                pos_attrs[node] = (coords[0], coords[1] + 0.19)
+
+            nx.draw(DG, pos1, with_labels=True, node_color="blue", node_size=1000, font_color="white", font_size=20,
+                    font_family="Times New Roman", font_weight="bold", width=5, edge_color="black")
+            nx.draw_networkx_edge_labels(DG, pos1, font_size=26, edge_labels=weights, font_color='red')
+
+            nx.draw_networkx_labels(DG, pos_attrs, labels=heuristic, font_size=12, font_color='k',
+                                    font_family='sans-serif', font_weight='normal', alpha=None, bbox=None,
+                                    horizontalalignment='center', verticalalignment='center', ax=None, clip_on=True)
+
+            # nx.draw(DG, pos1, with_labels=True)
+            # nx.draw_networkx_edge_labels(DG, pos1)
+            #
+            # nx.draw_networkx_labels(DG, pos_attrs, labels=custom_node_attrs)
+
+            plt.margins(0.2)
+            plt.show()
+        else:
+            weightList = weightsUnDir.keys()
+            G = nx.Graph()
+            G.add_nodes_from(nodesList)
+            G.add_edges_from(weightList)
+            pos = nx.spring_layout(G)
+
+            pos_attrs = {}
+            for node, coords in pos.items():
+                pos_attrs[node] = (coords[0], coords[1] + 0.19)
+
+            nx.draw(G, pos, with_labels=True, node_color="blue", node_size=1000, font_color="white", font_size=20,
+                    font_family="Times New Roman", font_weight="bold", width=5, edge_color="black")
+            nx.draw_networkx_edge_labels(G, pos, font_size=26, edge_labels=weights, font_color='red')
+
+            nx.draw_networkx_labels(G, pos_attrs, labels=heuristic, font_size=12, font_color='k',
+                                    font_family='sans-serif', font_weight='normal', alpha=None, bbox=None,
+                                    horizontalalignment='center', verticalalignment='center', ax=None, clip_on=True)
+
+            plt.margins(0.2)
+            plt.show()
 
 
 
