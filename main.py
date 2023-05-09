@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import *
 import sys
 from BFS import *
+from DFS import *
 
 
 graph = {}
@@ -15,7 +16,7 @@ graphUnDir = {}
 weightsUnDir = {}
 
 
-graphUnDir = graph = {
+graphUnDir = {
     '1':['2','3'],
     '2':['4','5','1'],
     '3':['6','7','1'],
@@ -24,7 +25,26 @@ graphUnDir = graph = {
     '6' :['3'],
     '7' :['3'],
 }
-weightsUnDir = weights = {
+
+graph = {
+    'a': ['c'],
+    'b': ['d'],
+    'c': ['e'],
+    'd': ['a', 'b'],
+    'e': ['b', 'c'],
+}
+
+weights = {
+    ('a','c'):1,
+    ('b','d'):1,
+    ('c','e'):1,
+    ('d','a'):1,
+    ('d','b'):1,
+    ('e','b'):1,
+    ('e','c'):1,
+}
+
+weightsUnDir = {
     ('1','2'):1,
     ('1','3'):1,
     ('2','4'):1,
@@ -140,7 +160,15 @@ class AILabProject():
 
         if graphType == 'Undirected Graph':
             if algo == 'BFS':
-                print(BFS(start,goal, graphUnDir,False))
+                print(BFS(start,goal, graphUnDir, False))
+            elif algo == 'DFS':
+                print(DFS(start,goal, graphUnDir, False))
+        else:
+            if algo == 'BFS':
+                print(BFS(start, goal, graph, True))
+            elif algo == 'DFS':
+                print(DFS(start,goal, graph, True))
+
 
 
     def add_nodes(self):
@@ -197,11 +225,10 @@ class AILabProject():
     def drawGraph(self):
 
         graphType = self.graphtype.currentText()
-        nodesList = graph.keys()
-
-
+        # nodesList = graph.keys()
 
         if graphType == "Directed Graph":
+            nodesList = graph.keys()
             weightList = weights.keys()
             DG = nx.DiGraph()
             DG.add_nodes_from(nodesList)
@@ -228,6 +255,7 @@ class AILabProject():
             plt.margins(0.2)
             plt.show()
         else:
+            nodesList = graphUnDir.keys()
             weightList = weightsUnDir.keys()
             G = nx.Graph()
             G.add_nodes_from(nodesList)
@@ -240,7 +268,7 @@ class AILabProject():
 
             nx.draw(G, pos, with_labels=True, node_color="blue", node_size=1000, font_color="white", font_size=20,
                     font_family="Times New Roman", font_weight="bold", width=5, edge_color="black")
-            nx.draw_networkx_edge_labels(G, pos, font_size=26, edge_labels=weights, font_color='red')
+            nx.draw_networkx_edge_labels(G, pos, font_size=26, edge_labels=weightsUnDir, font_color='red')
 
             nx.draw_networkx_labels(G, pos_attrs, labels=heuristic, font_size=12, font_color='k',
                                     font_family='sans-serif', font_weight='normal', alpha=None, bbox=None,
