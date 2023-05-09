@@ -1,10 +1,4 @@
-def findPath(goal, path):
-    finalPath = []
-    while goal != path[goal]:
-        finalPath.append(goal)
-        goal = path[goal]
-    finalPath.append(goal)
-    return list(reversed(finalPath))
+from util import *
 
 def BFS(start, goal, graph = {}, directed=True):
     # moves = len(graph.keys())*80

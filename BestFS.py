@@ -1,21 +1,24 @@
 from util import *
 
-def UCS(graph, weights, start, goal, directed=True):
+
+def BestFS(graph, heuristic, start, goal, directed=True):
     print(start, goal)
-    queue = [(0,start)]
+    queue = [start]
     visited = []
     parent = {start: start}
     while queue:
-        cost,first = queue.pop(0)
+        first = queue.pop(0)
         visited.append(first)
         print(first)
         if goal == first:
-            return (1, findPath(goal, parent))
+            return (1, visited)
+        children = []
         for i in graph[first]:
             if i not in visited:
                 parent[i] = first
-                queue.append((cost+weights[(first,i)],i))
-        queue.sort()
+                children.append((heuristic[i], i))
+        if len(children) > 0:
+            children.sort()
+            queue.append(children[0][1])
 
     return (0, "Path does not found")
-

@@ -1,6 +1,8 @@
 from util import *
 
-def DFS(start, goal, graph, directed=True):
+def DLS(graph,limit,start ,goal, directed=True):
+    if limit == 0:
+        return (0, "Please Enter the limit")
     # print(main.graph)
     print(start, goal)
     # graph = main.graph if directed else main.graphUnDir
@@ -10,11 +12,13 @@ def DFS(start, goal, graph, directed=True):
     while queue:
         first = queue.pop()
         print(first)
+
         if goal == first:
             return (1, findPath(goal,parent))
-        for i in graph[first]:
-            if i not in visited:
-                parent[i] = first
-                queue.append(i)
-                visited.append(i)
+        if len(findPath(first,parent)) <= limit:
+            for i in graph[first]:
+                if i not in visited:
+                    parent[i] = first
+                    queue.append(i)
+                    visited.append(i)
     return (0, "Path does not found")

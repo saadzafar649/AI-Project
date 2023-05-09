@@ -6,6 +6,9 @@ from PyQt5.QtWidgets import *
 import sys
 from BFS import *
 from DFS import *
+from UCS import *
+from DLS import *
+from BestFS import *
 
 
 graph = {}
@@ -15,16 +18,6 @@ heuristic = {}
 graphUnDir = {}
 weightsUnDir = {}
 
-
-graphUnDir = {
-    '1':['2','3'],
-    '2':['4','5','1'],
-    '3':['6','7','1'],
-    '4' :['2'],
-    '5' :['2'],
-    '6' :['3'],
-    '7' :['3'],
-}
 
 graph = {
     'a': ['c'],
@@ -44,25 +37,46 @@ weights = {
     ('e','c'):1,
 }
 
+
+graphUnDir = {
+    '1':['2','3'],
+    '2':['4','5','1'],
+    '3':['6','7','1'],
+    '4' :['2','7'],
+    '5' :['2'],
+    '6' :['3'],
+    '7' :['3','4'],
+}
+
 weightsUnDir = {
     ('1','2'):1,
     ('1','3'):1,
-    ('2','4'):1,
+    ('2','4'):7,
     ('2','5'):1,
-    ('2','1'):1,
-    ('4','2'):1,
-    ('5','2'):1,
     ('6','3'):1,
     ('7','3'):1,
+    ('7', '4'): 1,
+
+    ('2','1'): 1,
+    ('3','1'): 1,
+    ('4','2'): 7,
+    ('5','2'): 1,
+    ('3','6'): 1,
+    ('3','7'): 1,
+    ('4','7'): 1,
 }
 
+heuristic = {
+    '1': 1,
+    '2': 2,
+    '3': 2,
+    '4': 4,
+    '5': 0,
+    '6': 1,
+    '7': 3
+}
 
-
-
-
-
-
-class AILabProject():
+class AILabProject:
 
     def showerror(self,error):
         msg = QMessageBox()
@@ -122,10 +136,15 @@ class AILabProject():
         self.goal = QLineEdit(window)
         self.goal.move(290, 100)
 
+        node2_label = QLabel('Depth Limit:', window)
+        node2_label.move(400, 100)
+        self.depth_limit = QLineEdit(window)
+        self.depth_limit.move(500, 100)
+
         add_button = QPushButton('Submit', window)
         button_size = add_button.sizeHint()
         add_button.resize(button_size)
-        add_button.move(400, 100)
+        add_button.move(600, 100)
         add_button.clicked.connect(self.apply_algorithm)
 
         #Algo DropDown
@@ -147,27 +166,54 @@ class AILabProject():
 
     def apply_algorithm(self):
         algo = self.algorithms.currentText()
-        graphType = self.graphtype.currentText()
         start = self.start.text()
         goal = self.goal.text()
+        limit = 0
+        if self.depth_limit.text() != "":
+            limit = int(self.depth_limit.text())
 
-        if start not in graph or goal not in graph:
-            print("select valid nodes")
-            return
+        graphType = self.graphtype.currentText()
+        # nodesList = graph.keys()
+
+        if graphType == "Directed Graph":
+            if start not in graph or goal not in graph:
+                print("select valid nodes")
+                return
+        else:
+            if start not in graphUnDir or goal not in graphUnDir:
+                print("select valid nodes")
+                return
 
         self.start.clear()
         self.goal.clear()
-
+        output = (0,"No output")
         if graphType == 'Undirected Graph':
             if algo == 'BFS':
-                print(BFS(start,goal, graphUnDir, False))
+                output = BFS(start,goal, graphUnDir, False)
             elif algo == 'DFS':
-                print(DFS(start,goal, graphUnDir, False))
+                output = DFS(start,goal, graphUnDir, False)
+            elif algo == 'UCS':
+                output = UCS(graphUnDir,weightsUnDir,start,goal, False)
+            elif algo == 'BestFS':
+                output = BestFS(graphUnDir,heuristic,start,goal, False)
+            elif algo == 'DLS':
+                output = DLS(graphUnDir,limit,start,goal, False)
         else:
             if algo == 'BFS':
-                print(BFS(start, goal, graph, True))
+                output = BFS(start, goal, graph, True)
             elif algo == 'DFS':
-                print(DFS(start,goal, graph, True))
+                output = DFS(start,goal, graph, True)
+            elif algo == 'UCS':
+                output = UCS(graph,weights,start,goal, True)
+            elif algo == 'BestFS':
+                output = BestFS(graph,heuristic,start,goal, True)
+            elif algo == 'DLS':
+                output = DLS(graph,limit,start,goal, True)
+
+        if output[0] == 0:
+            self.showerror(output[1])
+        else:
+            print(output[1])
 
 
 
