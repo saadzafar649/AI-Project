@@ -8,6 +8,7 @@ from BFS import *
 from DFS import *
 from UCS import *
 from DLS import *
+from IDS import *
 from BestFS import *
 
 
@@ -149,7 +150,7 @@ class AILabProject:
 
         #Algo DropDown
         self.algorithms = QComboBox(window)
-        self.algorithms.addItems(['BFS', 'UCS', 'DFS', 'DLS', 'IDFS', 'BDS', 'BestFS', 'A*'])
+        self.algorithms.addItems(['BFS', 'UCS', 'DFS', 'DLS', 'IDS', 'BDS', 'BestFS', 'A*'])
         self.algorithms.setGeometry(20, 140, 100, 30)
 
         #Graph Type DropDown
@@ -264,17 +265,21 @@ class AILabProject:
                 output = BestFS(graphUnDir,heuristic,start,goal, False)
             elif algo == 'DLS':
                 output = DLS(graphUnDir,limit,start,goal, False)
+            elif algo == 'IDS':
+                output = IDS(graphUnDir,start,goal, False)
         else:
             if algo == 'BFS':
                 output = BFS(start, goal, graph, True)
             elif algo == 'DFS':
-                output = DFS(start,goal, graph, True)
+                output = DFS(start, goal, graph, True)
             elif algo == 'UCS':
-                output = UCS(graph,weights,start,goal, True)
+                output = UCS(graph, weights, start, goal, True)
             elif algo == 'BestFS':
-                output = BestFS(graph,heuristic,start,goal, True)
+                output = BestFS(graph, heuristic, start, goal, True)
             elif algo == 'DLS':
-                output = DLS(graph,limit,start,goal, True)
+                output = DLS(graph, limit, start, goal, True)
+            elif algo == 'IDS':
+                output = IDS(graph, start, goal, False)
 
         if output[0] == 0:
             self.showerror(output[1])
