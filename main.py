@@ -164,6 +164,72 @@ class AILabProject:
         add_button.move(400, 140)
         add_button.clicked.connect(self.drawGraph)
 
+    def drawPath(self,path):
+        edgeList=[]
+        heuristicDict={}
+
+        for i in range(0,len(path)-1):
+            edgeList.append((path[i],path[i+1]))
+
+        for i in path:
+            heuristicDict[i]=heuristic[i]
+
+        pathWeights={}
+        graphType = self.graphtype.currentText()
+
+        if graphType == "Directed Graph":
+            for i in edgeList:
+                pathWeights[i] = weights[i]
+
+            weightList = pathWeights.keys()
+            nodeList = path
+            DG = nx.DiGraph()
+            DG.add_nodes_from(nodeList)
+            DG.add_edges_from(weightList)
+
+            pos1 = nx.spring_layout(DG)
+
+            pos_attrs = {}
+            for node, coords in pos1.items():
+                pos_attrs[node] = (coords[0], coords[1] + 0.19)
+
+            nx.draw(DG, pos1, with_labels=True, node_color="blue", node_size=1000, font_color="white", font_size=20,
+                    font_family="Times New Roman", font_weight="bold", width=5, edge_color="black")
+            nx.draw_networkx_edge_labels(DG, pos1, font_size=26, edge_labels=pathWeights, font_color='red')
+
+            nx.draw_networkx_labels(DG, pos_attrs, labels=heuristicDict, font_size=12, font_color='k',
+                                    font_family='sans-serif', font_weight='normal', alpha=None, bbox=None,
+                                    horizontalalignment='center', verticalalignment='center', ax=None, clip_on=True)
+
+            plt.margins(0.2)
+            plt.show()
+        else:
+            for i in edgeList:
+                pathWeights[i] = weightsUnDir[i]
+
+            weightList = pathWeights.keys()
+            nodeList=path
+            G = nx.Graph()
+            G.add_nodes_from(nodeList)
+            G.add_edges_from(weightList)
+            pos = nx.spring_layout(G)
+
+            pos_attrs = {}
+            for node, coords in pos.items():
+                pos_attrs[node] = (coords[0], coords[1] + 0.19)
+
+            nx.draw(G, pos, with_labels=True, node_color="blue", node_size=1000, font_color="white", font_size=20,
+                    font_family="Times New Roman", font_weight="bold", width=5, edge_color="black")
+            nx.draw_networkx_edge_labels(G, pos, font_size=26, edge_labels=pathWeights, font_color='red')
+
+            nx.draw_networkx_labels(G, pos_attrs, labels=heuristicDict, font_size=12, font_color='k',
+                                    font_family='sans-serif', font_weight='normal', alpha=None, bbox=None,
+                                    horizontalalignment='center', verticalalignment='center', ax=None, clip_on=True)
+
+            plt.margins(0.2)
+            plt.show()
+
+
     def apply_algorithm(self):
         algo = self.algorithms.currentText()
         start = self.start.text()
@@ -213,7 +279,7 @@ class AILabProject:
         if output[0] == 0:
             self.showerror(output[1])
         else:
-            print(output[1])
+            self.drawPath(output[1])
 
 
 
@@ -292,11 +358,6 @@ class AILabProject:
             nx.draw_networkx_labels(DG, pos_attrs, labels=heuristic, font_size=12, font_color='k',
                                     font_family='sans-serif', font_weight='normal', alpha=None, bbox=None,
                                     horizontalalignment='center', verticalalignment='center', ax=None, clip_on=True)
-
-            # nx.draw(DG, pos1, with_labels=True)
-            # nx.draw_networkx_edge_labels(DG, pos1)
-            #
-            # nx.draw_networkx_labels(DG, pos_attrs, labels=custom_node_attrs)
 
             plt.margins(0.2)
             plt.show()
