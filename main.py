@@ -10,6 +10,7 @@ from UCS import *
 from DLS import *
 from IDS import *
 from BestFS import *
+from Astar import *
 
 
 graph = {}
@@ -67,7 +68,7 @@ weightsUnDir = {
     ('4','7'): 1,
 }
 
-heuristic = {
+heuristicUndir = {
     '1': 1,
     '2': 2,
     '3': 2,
@@ -75,6 +76,14 @@ heuristic = {
     '5': 0,
     '6': 1,
     '7': 3
+}
+
+heuristic = {
+    'a': 1,
+    'b': 2,
+    'c': 2,
+    'd': 4,
+    'e': 0,
 }
 
 class AILabProject:
@@ -382,19 +391,12 @@ class AILabProject:
                     font_family="Times New Roman", font_weight="bold", width=5, edge_color="black")
             nx.draw_networkx_edge_labels(G, pos, font_size=26, edge_labels=weightsUnDir, font_color='red')
 
-            nx.draw_networkx_labels(G, pos_attrs, labels=heuristic, font_size=12, font_color='k',
+            nx.draw_networkx_labels(G, pos_attrs, labels=heuristicUndir, font_size=12, font_color='k',
                                     font_family='sans-serif', font_weight='normal', alpha=None, bbox=None,
                                     horizontalalignment='center', verticalalignment='center', ax=None, clip_on=True)
 
             plt.margins(0.2)
             plt.show()
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
