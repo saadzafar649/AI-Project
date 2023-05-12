@@ -87,7 +87,6 @@ heuristic = {
 }
 
 class AILabProject:
-
     def showerror(self,error):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
@@ -95,6 +94,7 @@ class AILabProject:
         msg.setWindowTitle("Error")
         msg.setStandardButtons(QMessageBox.Ok)
         msg.exec_()
+
     def load_gui(self, window):
         #to add nodes
 
@@ -174,20 +174,20 @@ class AILabProject:
         add_button.move(400, 140)
         add_button.clicked.connect(self.drawGraph)
 
-    def drawPath(self,path):
+    def drawPath(self,path, graph_type):
         edgeList=[]
         heuristicDict={}
 
         for i in range(0,len(path)-1):
             edgeList.append((path[i],path[i+1]))
 
-        for i in path:
-            heuristicDict[i]=heuristic[i]
-
         pathWeights={}
-        graphType = self.graphtype.currentText()
+        graphType = graph_type
 
         if graphType == "Directed Graph":
+            for i in path:
+                heuristicDict[i] = heuristic[i]
+
             for i in edgeList:
                 pathWeights[i] = weights[i]
 
@@ -214,6 +214,9 @@ class AILabProject:
             plt.margins(0.2)
             plt.show()
         else:
+            for i in path:
+                heuristicDict[i] = heuristicUndir[i]
+
             for i in edgeList:
                 pathWeights[i] = weightsUnDir[i]
 
@@ -238,7 +241,6 @@ class AILabProject:
 
             plt.margins(0.2)
             plt.show()
-
 
     def apply_algorithm(self):
         algo = self.algorithms.currentText()
@@ -265,37 +267,42 @@ class AILabProject:
         output = (0,"No output")
         if graphType == 'Undirected Graph':
             if algo == 'BFS':
-                output = BFS(start,goal, graphUnDir, False)
+                output = BFS(start, goal, graphUnDir)
             elif algo == 'DFS':
-                output = DFS(start,goal, graphUnDir, False)
+                output = DFS(start, goal, graphUnDir)
             elif algo == 'UCS':
-                output = UCS(graphUnDir,weightsUnDir,start,goal, False)
+                output = UCS(graphUnDir, weightsUnDir, start, goal)
             elif algo == 'BestFS':
-                output = BestFS(graphUnDir,heuristic,start,goal, False)
+                output = BestFS(graphUnDir, heuristic, start, goal)
             elif algo == 'DLS':
-                output = DLS(graphUnDir,limit,start,goal, False)
+                output = DLS(graphUnDir, limit, start, goal)
             elif algo == 'IDS':
-                output = IDS(graphUnDir,start,goal, False)
+                output = IDS(graphUnDir, start, goal)
+            elif algo == 'A*':
+                output = Astar(graphUnDir, weightsUnDir, heuristicUndir, start, goal)
+
         else:
             if algo == 'BFS':
-                output = BFS(start, goal, graph, True)
+                output = BFS(start, goal, graph)
             elif algo == 'DFS':
-                output = DFS(start, goal, graph, True)
+                output = DFS(start, goal, graph)
             elif algo == 'UCS':
-                output = UCS(graph, weights, start, goal, True)
+                output = UCS(graph, weights, start, goal)
             elif algo == 'BestFS':
-                output = BestFS(graph, heuristic, start, goal, True)
+                output = BestFS(graph, heuristic, start, goal)
             elif algo == 'DLS':
-                output = DLS(graph, limit, start, goal, True)
+                output = DLS(graph, limit, start, goal)
             elif algo == 'IDS':
-                output = IDS(graph, start, goal, False)
+                output = IDS(graph, start, goal)
+            elif algo == 'A*':
+                output = Astar(graph, weights, heuristic, start, goal)
+
+
 
         if output[0] == 0:
             self.showerror(output[1])
         else:
-            self.drawPath(output[1])
-
-
+            self.drawPath(output[1], graphType)
 
     def add_nodes(self):
         node1 = self.node1_input.text()
@@ -347,11 +354,9 @@ class AILabProject:
             heuristic[node]=int(nodeHeuristic)
             print(heuristic)
 
-
     def drawGraph(self):
 
         graphType = self.graphtype.currentText()
-        # nodesList = graph.keys()
 
         if graphType == "Directed Graph":
             nodesList = graph.keys()
