@@ -1,7 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-
 from PyQt5.QtWidgets import *
 import sys
 from BFS import *
@@ -11,6 +10,7 @@ from DLS import *
 from IDS import *
 from BestFS import *
 from Astar import *
+from BiDirectional import *
 
 
 graph = {}
@@ -280,6 +280,8 @@ class AILabProject:
                 output = IDS(graphUnDir, start, goal)
             elif algo == 'A*':
                 output = Astar(graphUnDir, weightsUnDir, heuristicUndir, start, goal)
+            elif algo == 'BDS':
+                output = biDirectionalSearch(graphUnDir, start, goal)
 
         else:
             if algo == 'BFS':
@@ -296,7 +298,8 @@ class AILabProject:
                 output = IDS(graph, start, goal)
             elif algo == 'A*':
                 output = Astar(graph, weights, heuristic, start, goal)
-
+            elif algo == 'BDS':
+                output = biDirectionalSearch(graph, start, goal)
 
 
         if output[0] == 0:
@@ -331,6 +334,7 @@ class AILabProject:
         #     graphUnDir[node2].append(node1)
 
         # if graphType == "Undirected Graph":
+
         if node1 not in graphUnDir[node2]:
             graphUnDir[node2].append(node1)
 
@@ -365,6 +369,7 @@ class AILabProject:
             DG.add_nodes_from(nodesList)
             DG.add_edges_from(weightList)
             pos1 = nx.spring_layout(DG)
+            #pos1 = nx.kamada_kawai_layout(DG)
 
             pos_attrs = {}
             for node, coords in pos1.items():
@@ -387,6 +392,7 @@ class AILabProject:
             G.add_nodes_from(nodesList)
             G.add_edges_from(weightList)
             pos = nx.spring_layout(G)
+            #pos = nx.kamada_kawai_layout(G)
 
             pos_attrs = {}
             for node, coords in pos.items():
