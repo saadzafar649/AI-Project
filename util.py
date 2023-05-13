@@ -17,7 +17,8 @@ def findPathBiDir(f_parent, b_parent, intersect, start, goal):
 
     path[0].append(temp)
     path[0].reverse()
-
+    if path[0][0] == start and path[0][len(path[0])-1] == goal:
+        return path[0]
     temp = b_parent[intersect]
     while temp != goal:
         path[1].append(temp)
@@ -26,4 +27,5 @@ def findPathBiDir(f_parent, b_parent, intersect, start, goal):
     path[1].append(temp)
 
     path[0].extend(path[1])
+    print(path)
     return path[0]

@@ -22,6 +22,36 @@ heuristic = {}
 graphUnDir = {}
 weightsUnDir = {}
 
+heuristic = {
+'1': 4,
+'2': 3,
+'3': 2,
+'4': 1,
+'5': 0
+}
+
+graphUnDir = {
+'1': ['2', '3', '5'],
+'2': ['1', '3'],
+'3': ['1', '2', '4'],
+'4': ['3', '5'],
+'5': ['1', '4']
+}
+
+weightsUnDir = {
+('1', '2'): 2,
+('2', '1'): 2,
+('1', '3'): 3,
+('3', '1'): 3,
+('1', '5'): 1,
+('5', '1'): 1,
+('2', '3'): 1,
+('3', '2'): 1,
+('3', '4'): 2,
+('4', '3'): 2,
+('4', '5'): 3,
+('5', '4'): 3
+}
 # graph = {
 #     'a': ['c'],
 #     'b': ['d'],
@@ -98,79 +128,83 @@ class AILabProject:
 
     def load_gui(self, window):
         # to add nodes
+        height = 20
 
         node1_label = QLabel('Node1:', window)
-        node1_label.move(20, 20)
+        node1_label.move(20, height)
         self.node1_input = QLineEdit(window)
-        self.node1_input.move(80, 20)
+        self.node1_input.move(130, height)
 
         node2_label = QLabel('Node2:', window)
-        node2_label.move(200, 20)
+        node2_label.move(240, height)
         self.node2_input = QLineEdit(window)
-        self.node2_input.move(260, 20)
+        self.node2_input.move(350, height)
 
         weight_label = QLabel('Edge Weight:', window)
-        weight_label.move(380, 20)
+        weight_label.move(460, height)
         self.weight_input = QLineEdit(window)
-        self.weight_input.move(470, 20)
+        self.weight_input.move(580, height)
 
         add_button = QPushButton('Add Nodes', window)
-        add_button.move(600, 20)
+        add_button.move(750, height)
         add_button.clicked.connect(self.add_nodes)
 
+        height = 100
         # to add heuristic
         node1_label = QLabel('Node:', window)
-        node1_label.move(20, 60)
+        node1_label.move(20, height)
         self.node = QLineEdit(window)
-        self.node.move(80, 60)
+        self.node.move(130, height)
 
         node2_label = QLabel('Node Heuristic:', window)
-        node2_label.move(200, 60)
+        node2_label.move(240, height)
         self.nodeHeuristic = QLineEdit(window)
-        self.nodeHeuristic.move(290, 60)
+        self.nodeHeuristic.move(350, height)
 
         add_button = QPushButton('Add Node Heuristic', window)
         button_size = add_button.sizeHint()
         add_button.resize(button_size)
-        add_button.move(400, 60)
+        add_button.move(750, height)
         add_button.clicked.connect(self.add_node_heuristic)
 
-        # to add heuristic
+        height = 180
+        # apply algo
         node1_label = QLabel('Start Node:', window)
-        node1_label.move(20, 100)
+        node1_label.move(20, height)
         self.start = QLineEdit(window)
-        self.start.move(100, 100)
+        self.start.move(130, height)
 
         node2_label = QLabel('Goal Node:', window)
-        node2_label.move(200, 100)
+        node2_label.move(240, height)
         self.goal = QLineEdit(window)
-        self.goal.move(290, 100)
+        self.goal.move(350, height)
 
         node2_label = QLabel('Depth Limit:', window)
-        node2_label.move(400, 100)
+        node2_label.move(460, height)
         self.depth_limit = QLineEdit(window)
-        self.depth_limit.move(500, 100)
+        self.depth_limit.move(580, height)
 
         add_button = QPushButton('Submit', window)
         button_size = add_button.sizeHint()
         add_button.resize(button_size)
-        add_button.move(600, 100)
+        add_button.move(750, height)
         add_button.clicked.connect(self.apply_algorithm)
 
+        height = 260
         # Algo DropDown
         self.algorithms = QComboBox(window)
         self.algorithms.addItems(['BFS', 'UCS', 'DFS', 'DLS', 'IDS', 'BDS', 'BestFS', 'A*'])
-        self.algorithms.setGeometry(20, 140, 100, 30)
+        self.algorithms.setGeometry(20, height, 100, 30)
 
         # Graph Type DropDown
         self.graphtype = QComboBox(window)
         self.graphtype.addItems(['Undirected Graph', 'Directed Graph'])
-        self.graphtype.setGeometry(180, 140, 200, 30)
+        self.graphtype.setGeometry(350, height, 200, 30)
 
         add_button = QPushButton('Show Graph', window)
         button_size = add_button.sizeHint()
         add_button.resize(button_size)
-        add_button.move(400, 140)
+        add_button.move(750, height)
         add_button.clicked.connect(self.drawGraph)
 
     def drawPath(self, path, graph_type):
@@ -527,10 +561,17 @@ class AILabProject:
 
 
 if __name__ == "__main__":
+    from PyQt5.QtGui import QFont
+
     app = QApplication(sys.argv)
+    #
+    # font = QFont()
+    # font.setPointSize(10)
+    # app.setFont(font)
+
     window = QMainWindow()
     window.setWindowTitle('Input Field Example')
-    window.resize(779, 790)
+    window.resize(900, 400)
     ui = AILabProject()
     ui.load_gui(window)
     window.show()

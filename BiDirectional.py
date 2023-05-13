@@ -16,6 +16,7 @@ def biDirectionalSearch(graph, start, goal, directed=True):
         f_visited.append(first)
 
         if first in b_visited:
+            print(f_parent, b_parent)
             return (1, findPathBiDir(f_parent, b_parent, first, start, goal))
 
         for i in graph[first]:
@@ -27,6 +28,7 @@ def biDirectionalSearch(graph, start, goal, directed=True):
         b_visited.append(first)
 
         if first in f_visited:
+            print(f_parent, b_parent)
             return (1, findPathBiDir(f_parent, b_parent, first, start, goal))
 
         for i in graph[first]:
