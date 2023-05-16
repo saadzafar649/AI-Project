@@ -13,6 +13,7 @@ from IDS import *
 from BestFS import *
 from Astar import *
 from BiDirectional import *
+from SimulatedAnnealing import *
 import scipy as sp
 
 graph = {}
@@ -22,53 +23,112 @@ heuristic = {}
 graphUnDir = {}
 weightsUnDir = {}
 
-heuristic = {
-'1': 4,
-'2': 3,
-'3': 2,
-'4': 1,
-'5': 0
-}
+# heuristic = {
+#     '1': 2,
+#     '2': 3,
+#     '3': 1,
+#     '4': 4,
+#     '5': 0,
+#     '6': 3,
+#     '7': 2,
+#     '8': 1,
+#     '9': 4,
+#     '10': 0
+# }
 
 graphUnDir = {
-'1': ['2', '3', '5'],
-'2': ['1', '3'],
-'3': ['1', '2', '4'],
-'4': ['3', '5'],
-'5': ['1', '4']
+    '1': ['2', '3', '5'],
+    '2': ['1', '4', '6'],
+    '3': ['1', '7', '8'],
+    '4': ['2', '9', '10'],
+    '5': ['1', '6', '10'],
+    '6': ['2', '5', '7'],
+    '7': ['3', '6', '8'],
+    '8': ['3', '7', '9'],
+    '9': ['4', '8', '10'],
+    '10': ['4', '5', '9'],
 }
 
 weightsUnDir = {
-('1', '2'): 2,
-('2', '1'): 2,
-('1', '3'): 3,
-('3', '1'): 3,
-('1', '5'): 1,
-('5', '1'): 1,
-('2', '3'): 1,
-('3', '2'): 1,
-('3', '4'): 2,
-('4', '3'): 2,
-('4', '5'): 3,
-('5', '4'): 3
+    ('1', '2'): 9,
+    ('1', '3'): 10,
+    ('1', '5'): 11,
+    ('2', '1'): 9,
+    ('2', '4'): 12,
+    ('2', '6'): 13,
+    ('3', '1'): 10,
+    ('3', '7'): 14,
+    ('3', '8'): 15,
+    ('4', '2'): 12,
+    ('4', '9'): 16,
+    ('4', '10'): 17,
+    ('5', '1'): 11,
+    ('5', '6'): 18,
+    ('5', '10'): 19,
+    ('6', '2'): 13,
+    ('6', '5'): 18,
+    ('6', '7'): 20,
+    ('7', '3'): 14,
+    ('7', '6'): 20,
+    ('7', '8'): 21,
+    ('8', '3'): 15,
+    ('8', '7'): 21,
+    ('8', '9'): 22,
+    ('9', '4'): 16,
+    ('9', '8'): 22,
+    ('9', '10'): 23,
+    ('10', '4'): 17,
+    ('10', '5'): 19,
+    ('10', '9'): 23,
 }
-# graph = {
-#     'a': ['c'],
-#     'b': ['d'],
-#     'c': ['e'],
-#     'd': ['a', 'b'],
-#     'e': ['b', 'c'],
+
+# heuristic = {
+# '1': 4,
+# '2': 3,
+# '3': 2,
+# '4': 1,
+# '5': 0
 # }
 #
-# weights = {
-#     ('a', 'c'): 1,
-#     ('b', 'd'): 1,
-#     ('c', 'e'): 1,
-#     ('d', 'a'): 1,
-#     ('d', 'b'): 1,
-#     ('e', 'b'): 1,
-#     ('e', 'c'): 1,
+# graphUnDir = {
+# '1': ['2', '3', '5'],
+# '2': ['1', '3'],
+# '3': ['1', '2', '4'],
+# '4': ['3', '5'],
+# '5': ['1', '4']
 # }
+#
+# weightsUnDir = {
+# ('1', '2'): 2,
+# ('2', '1'): 2,
+# ('1', '3'): 3,
+# ('3', '1'): 3,
+# ('1', '5'): 1,
+# ('5', '1'): 1,
+# ('2', '3'): 1,
+# ('3', '2'): 1,
+# ('3', '4'): 2,
+# ('4', '3'): 2,
+# ('4', '5'): 3,
+# ('5', '4'): 3
+# }
+graph = {
+    'a': ['c'],
+    'b': ['d'],
+    'c': ['e'],
+    'd': ['a', 'b'],
+    'e': ['b', 'c'],
+}
+
+weights = {
+    ('a', 'c'): 1,
+    ('b', 'd'): 1,
+    ('c', 'e'): 1,
+    ('d', 'a'): 1,
+    ('d', 'b'): 1,
+    ('e', 'b'): 1,
+    ('e', 'c'): 1,
+}
 #
 # graphUnDir = {
 #     '1': ['2', '3'],
@@ -108,13 +168,13 @@ weightsUnDir = {
 #     '7': 3
 # }
 #
-# heuristic = {
-#     'a': 1,
-#     'b': 2,
-#     'c': 2,
-#     'd': 4,
-#     'e': 0,
-# }
+heuristic = {
+    'a': 1,
+    'b': 2,
+    'c': 2,
+    'd': 4,
+    'e': 0,
+}
 
 
 class AILabProject:
@@ -193,7 +253,7 @@ class AILabProject:
         height = 260
         # Algo DropDown
         self.algorithms = QComboBox(window)
-        self.algorithms.addItems(['BFS', 'UCS', 'DFS', 'DLS', 'IDS', 'BDS', 'BestFS', 'A*'])
+        self.algorithms.addItems(['BFS', 'UCS', 'DFS', 'DLS', 'IDS', 'BDS', 'BestFS', 'A*', 'SA'])
         self.algorithms.setGeometry(20, height, 100, 30)
 
         # Graph Type DropDown
@@ -325,11 +385,11 @@ class AILabProject:
 
         if graphType == "Directed Graph":
             if start not in graph or goal not in graph:
-                print("select valid nodes")
+                self.showerror("select valid nodes")
                 return
         else:
             if start not in graphUnDir or goal not in graphUnDir:
-                print("select valid nodes")
+                self.showerror("select valid nodes")
                 return
 
         self.start.clear()
@@ -352,6 +412,9 @@ class AILabProject:
                 output = Astar(graphUnDir, weightsUnDir, heuristic, start, goal)
             elif algo == 'BDS':
                 output = biDirectionalSearch(graphUnDir, start, goal)
+            elif algo == 'SA':
+                output = simulated_annealing(start, goal, graphUnDir, weightsUnDir)
+
 
         else:
             if algo == 'BFS':
@@ -370,6 +433,8 @@ class AILabProject:
                 output = Astar(graph, weights, heuristic, start, goal)
             elif algo == 'BDS':
                 output = biDirectionalSearch(graph, start, goal)
+            elif algo == 'SA':
+                output = simulated_annealing(start, goal, graph, weights)
 
         if output[0] == 0:
             self.showerror(output[1])
