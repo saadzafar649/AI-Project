@@ -14,6 +14,7 @@ from BestFS import *
 from Astar import *
 from BiDirectional import *
 from SimulatedAnnealing import *
+from AlphaBetaPruning import *
 import scipy as sp
 
 graph = {}
@@ -177,6 +178,65 @@ heuristic = {
 }
 
 
+graphUnDir = {
+    '1': ['2', '3', '5'],
+    '2': ['1', '4', '6'],
+    '3': ['1', '7', '8'],
+    '4': ['2', '9', '10'],
+    '5': ['1', '6', '10'],
+    '6': ['2', '5', '7'],
+    '7': ['3', '6', '8'],
+    '8': ['3', '7', '9'],
+    '9': ['4', '8', '10'],
+    '10': ['4', '5', '9'],
+}
+
+weightsUnDir = {
+    ('1', '2'): 9,
+    ('1', '3'): 10,
+    ('1', '5'): 11,
+    ('2', '1'): 9,
+    ('2', '4'): 12,
+    ('2', '6'): 13,
+    ('3', '1'): 10,
+    ('3', '7'): 14,
+    ('3', '8'): 15,
+    ('4', '2'): 12,
+    ('4', '9'): 16,
+    ('4', '10'): 17,
+    ('5', '1'): 11,
+    ('5', '6'): 18,
+    ('5', '10'): 19,
+    ('6', '2'): 13,
+    ('6', '5'): 18,
+    ('6', '7'): 20,
+    ('7', '3'): 14,
+    ('7', '6'): 20,
+    ('7', '8'): 21,
+    ('8', '3'): 15,
+    ('8', '7'): 21,
+    ('8', '9'): 22,
+    ('9', '4'): 16,
+    ('9', '8'): 22,
+    ('9', '10'): 23,
+    ('10', '4'): 17,
+    ('10', '5'): 19,
+    ('10', '9'): 23,
+}
+# heuristic = {
+#     '1': 0,
+#     '2': 1,
+#     '3': 2,
+#     '4': 3,
+#     '5': 4,
+#     '6': 5,
+#     '7': 6,
+#     '8': 7,
+#     '9': 8,
+#     '10': 9,
+# }
+
+
 class AILabProject:
     def showerror(self, error):
         msg = QMessageBox()
@@ -253,7 +313,7 @@ class AILabProject:
         height = 260
         # Algo DropDown
         self.algorithms = QComboBox(window)
-        self.algorithms.addItems(['BFS', 'UCS', 'DFS', 'DLS', 'IDS', 'BDS', 'BestFS', 'A*', 'SA'])
+        self.algorithms.addItems(['BFS', 'UCS', 'DFS', 'DLS', 'IDS', 'BDS', 'BestFS', 'A*', 'SA', "ABPruning"])
         self.algorithms.setGeometry(20, height, 100, 30)
 
         # Graph Type DropDown
@@ -414,6 +474,8 @@ class AILabProject:
                 output = biDirectionalSearch(graphUnDir, start, goal)
             elif algo == 'SA':
                 output = simulated_annealing(start, goal, graphUnDir, weightsUnDir)
+            elif algo == 'ABPruning':
+                output = alphaBetaPruning(start, goal, graphUnDir, weightsUnDir)
 
 
         else:
@@ -435,6 +497,8 @@ class AILabProject:
                 output = biDirectionalSearch(graph, start, goal)
             elif algo == 'SA':
                 output = simulated_annealing(start, goal, graph, weights)
+            elif algo == 'ABPruning':
+                output = alphaBetaPruning(start, goal, graph, weights)
 
         if output[0] == 0:
             self.showerror(output[1])
